@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router";
 
@@ -5,9 +6,25 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+
+  const login = async()=>{
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/login`, {email, password},
+        {headers:{
+          'Content-Type':'application/json'
+        }}
+      )
+      console.log('data sent')
+    } catch (error) {
+      console.error(error)
+    }
+    
+  }
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Logging in with:", { email, password });
+    login()
   };
 
   return (
@@ -15,8 +32,7 @@ const Login = () => {
       className="min-h-screen flex items-center justify-center bg-gray-100"
 
     >
-      {/* Overlay for better readability */}
-      <div className="absolute inset-0  bg-opacity-50"></div>
+
 
       {/* Login Form */}
       <div className="relative z-10 bg-white shadow-lg rounded-xl p-8 w-full max-w-md">

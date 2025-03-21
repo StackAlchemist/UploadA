@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router";
 
@@ -6,18 +7,34 @@ const Signup = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const signUp = async()=>{
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/signup`, {name, email, password},
+        {headers:{
+          'Content-Type':'application/json'
+        }}
+      )
+      console.log('data sent')
+    } catch (error) {
+      console.error(error)
+    }
+    
+  }
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Logging in with:", {name, email, password });
+    signUp()
   };
+
+  
 
   return (
     <section
       className="min-h-screen flex items-center justify-center bg-gray-100"
 
     >
-      {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-opacity-50"></div>
+
 
       {/* Login Form */}
       <div className="relative z-10 bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
@@ -26,7 +43,7 @@ const Signup = () => {
         <form onSubmit={handleLogin} className="space-y-4">
           {/* Email Input */}
           <div>
-            <label htmlFor="email" className="block text-gray-700 text-sm font-medium">
+            <label htmlFor="na,e" className="block text-gray-700 text-sm font-medium">
               Name
             </label>
             <input
@@ -36,7 +53,7 @@ const Signup = () => {
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring focus:ring-blue-300"
-              placeholder="Enter your email"
+              placeholder="Enter your name"
             />
           </div>
           <div>
