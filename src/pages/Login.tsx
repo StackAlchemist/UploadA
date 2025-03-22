@@ -1,22 +1,34 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router";
+import { ClipLoader } from "react-spinners";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  
 
 
-  const login = async()=>{
+  const login = async()=> {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/login`, {email, password},
+      setIsLoading(true)
+      const response  = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {email, password},
         {headers:{
           'Content-Type':'application/json'
         }}
       )
+      console.log(response.data)
+      localStorage.setItem('userId', response.data.user)
+      localStorage.setItem('authToken', response.data.token)
+      toast.success('Logged in Successfully')
       console.log('data sent')
     } catch (error) {
+      toast.error(`Let's try that again`)
       console.error(error)
+    }finally{
+      setIsLoading(false)
     }
     
   }
@@ -76,7 +88,11 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition"
           >
-            Login
+                         { !isLoading ? 'Log In':<p className="flex justify-center items-center gap-1">
+              Logging you in...
+               <ClipLoader color="#ffffff" size={24}/>
+            </p>
+           }
           </button>
         </form>
 

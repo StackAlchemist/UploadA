@@ -7,12 +7,14 @@ import Upload from './pages/Upload'
 import Views from './pages/Views'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import { ToastContainer } from 'react-toastify'
 
 
 const App = () => {
   return (
 <div>
   <Navbar />
+  <ToastContainer />
   <Routes>
     <Route path='/' element={<Home />}/>
     <Route path='/uploads' element={<Upload />}/>
