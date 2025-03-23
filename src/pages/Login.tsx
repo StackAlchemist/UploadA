@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router";
 import { ClipLoader } from "react-spinners";
@@ -15,7 +15,8 @@ const Login = () => {
     try {
       setIsLoading(true)
       const response  = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {email, password},
-        {headers:{
+        {withCredentials: true,
+          headers:{
           'Content-Type':'application/json'
         }}
       )
@@ -24,10 +25,24 @@ const Login = () => {
       localStorage.setItem('authToken', response.data.token)
       toast.success('Logged in Successfully')
       console.log('data sent')
-    } catch (error) {
-      toast.error(`Let's try that again`)
-      console.error(error)
-    }finally{
+    } catch (error: unknown) {
+      console.error(error);
+  
+      if (error instanceof AxiosError) {
+          if (error.response) {
+              const errorMessage = error.response.data.error || "Login failed";
+              toast.error(errorMessage);
+          } else if (error.request) {
+              toast.error("Server is not responding. Check your internet connection.");
+          } else {
+              toast.error("An unexpected error occurred.");
+          }
+      } else if (error instanceof Error) {
+          toast.error(error.message);
+      } else {
+          toast.error("An unknown error occurred.");
+      }
+  }finally{
       setIsLoading(false)
     }
     
